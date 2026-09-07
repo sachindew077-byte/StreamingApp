@@ -452,24 +452,7 @@ http://localhost
 
 ---
 
-## 16. Production Considerations
-
-For production deployment, the following improvements are recommended:
-
-* Use HTTPS/TLS for the Ingress.
-* Store secrets in a dedicated secret-management solution such as AWS Secrets Manager or an external secrets operator.
-* Use managed MongoDB or a production-grade replicated database.
-* Configure resource requests and limits for all workloads.
-* Add Horizontal Pod Autoscaling based on CPU/memory or application metrics.
-* Use a production object-storage/CDN configuration for video delivery.
-* Configure centralized logging and monitoring.
-* Configure readiness and liveness probes appropriately.
-* Use separate Kubernetes namespaces/environments for development, staging and production.
-* Implement CI/CD for automated image builds, security scanning and Helm deployments.
-
----
-
-## 17. Technologies Used
+## 16. Technologies Used
 
 * React
 * Node.js
@@ -487,7 +470,7 @@ For production deployment, the following improvements are recommended:
 
 ---
 
-## 18. Assignment Verification Summary
+## 17. Assignment Verification Summary
 
 | Requirement                   | Status    |
 | ----------------------------- | --------- |
