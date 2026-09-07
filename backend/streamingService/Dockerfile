@@ -1,12 +1,14 @@
-FROM node:18-alpine AS base
+FROM node:18-alpine
 
-WORKDIR /app/streamingService
+WORKDIR /app
 
-COPY streamingService/package*.json ./
+COPY package*.json ./
 RUN npm install --production
 
-COPY streamingService/. ./
+COPY . .
+
 ENV NODE_ENV=production
+
 EXPOSE 3002
 
 CMD ["npm", "run", "start"]

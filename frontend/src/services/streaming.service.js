@@ -43,6 +43,10 @@ const buildPlaybackUrl = (value) => {
     return value;
   }
 
+  if (value.startsWith('/api/streaming/')) {
+    return value;
+  }
+
   const base = STREAMING_PUBLIC_URL.replace(/\/$/, '');
   const path = value.startsWith('/') ? value : `/${value}`;
   return `${base}${path}`;
@@ -74,7 +78,7 @@ export const streamingService = {
     return buildPlaybackUrl(
       videoOrPath.streamUrl ||
       videoOrPath.streamPath ||
-      `/api/streaming/stream/${videoOrPath._id}`,
+      `/stream/${videoOrPath._id}`,
     );
   },
 };

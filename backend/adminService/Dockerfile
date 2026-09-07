@@ -1,12 +1,14 @@
-FROM node:18-alpine AS base
+FROM node:18-alpine
 
-WORKDIR /app/adminService
+WORKDIR /app
 
-COPY adminService/package*.json ./
+COPY package*.json ./
 RUN npm install --production
 
-COPY adminService/. ./
+COPY . .
+
 ENV NODE_ENV=production
+
 EXPOSE 3003
 
 CMD ["npm", "run", "start"]

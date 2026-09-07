@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streaming
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.services.streaming.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: {{ .Values.deploymentStrategy.maxUnavailable }}
+      maxSurge: {{ .Values.deploymentStrategy.maxSurge }}
+  selector:
+    matchLabels:
+      app: streaming
+  template:
+    metadata:
+      labels:
+        app: streaming
+    spec:
+      containers:
+        - name: streaming
+          image: "{{ .Values.services.streaming.image }}:{{ .Values.services.streaming.tag }}"
+          ports:
+            - containerPort: {{ .Values.services.streaming.port }}
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: streamingapp-config
+                  key: STREAMING_PORT
+            - name: MONGO_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: streamingapp-config
+                  key: MONGO_URI
+            - name: CLIENT_URLS
+              valueFrom:
+                configMapKeyRef:
+                  name: streamingapp-config
+                  key: CLIENT_URLS
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: streamingapp-secret
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: streamingapp-secret
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: AWS_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: streamingapp-config
+                  key: AWS_REGION
+            - name: AWS_S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: streamingapp-secret
+                  key: AWS_S3_BUCKET
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: {{ .Values.services.streaming.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: {{ .Values.services.streaming.port }}
+            initialDelaySeconds: 20
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streaming-svc
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: streaming
+  ports:
+    - port: {{ .Values.services.streaming.port }}
+      targetPort: {{ .Values.services.streaming.port }}

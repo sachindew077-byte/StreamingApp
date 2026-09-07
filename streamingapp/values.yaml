@@ -1,0 +1,60 @@
+services:
+  auth:
+    image: sacdew77/streaming-auth
+    tag: "1.0.1"
+    replicas: 1
+    port: 3001
+
+  streaming:
+    image: sacdew77/streaming-stream
+    tag: "1.0.0"
+    replicas: 4
+    port: 3002
+
+  admin:
+    image: sacdew77/streaming-admin
+    tag: "1.0.0"
+    replicas: 1
+    port: 3003
+
+  chat:
+    image: sacdew77/streaming-chat
+    tag: "1.0.0"
+    replicas: 1
+    port: 3004
+
+  frontend:
+    image: sacdew77/streaming-frontend
+    tag: "1.0.6"
+    replicas: 1
+    port: 80
+
+mongo:
+  image: mongo:6
+  storageSize: 1Gi
+
+config:
+  mongoDb: streamingapp
+  mongoUri: mongodb://mongo:27017/streamingapp
+  awsRegion: ap-south-1
+  clientUrls: http://localhost
+  streamingPublicUrl: http://localhost/api/streaming
+  authPort: "3001"
+  streamingPort: "3002"
+  adminPort: "3003"
+  chatPort: "3004"
+
+secret:
+  jwtSecret: changeme
+  awsAccessKeyId: ""
+  awsSecretAccessKey: ""
+  awsS3Bucket: "streamingapp-s3-test"
+
+deploymentStrategy:
+  maxUnavailable: 0
+  maxSurge: 1
+
+ingress:
+  enabled: true
+  className: nginx
+  host: localhost
